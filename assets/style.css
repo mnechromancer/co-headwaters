@@ -55,9 +55,18 @@ img, svg { max-width: 100%; }
   overflow: hidden;
 }
 
+/* The camera keyframes pick a viewBox that frames everything drawn so far, but
+   that box is often taller than it is wide. With height left to the intrinsic
+   viewBox ratio the element grew past the viewport and #intro's overflow:hidden
+   silently cropped up to a third of the frame off the top and bottom — so the
+   framing the director computed was not the framing anyone saw. Clamping the
+   height keeps the whole box on screen; the ratio is preserved, so renderAt()'s
+   px-per-user-unit maths is unaffected. */
 #intro svg {
   width: 100%;
   max-width: 960px;
+  max-height: 100vh;
+  max-height: 100dvh;
 }
 
 .state-outline {
@@ -67,13 +76,20 @@ img, svg { max-width: 100%; }
   vector-effect: non-scaling-stroke;
 }
 
+/* NOTE: no `vector-effect: non-scaling-stroke` here, deliberately. Chrome
+   applies the dash pattern in device space when non-scaling-stroke is on,
+   which defeats the pathLength="1" normalisation the reveal depends on (the
+   line comes out as scattered fragments spread over the whole river instead
+   of one segment growing from the headwater). renderAt() sets stroke-width
+   in user units each frame instead, the same way it sizes dots and labels,
+   so the apparent width still stays constant as the camera zooms. The
+   stroke-width below is only a pre-first-frame fallback. */
 .river-line {
   fill: none;
   stroke: var(--river);
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
 }
 
 .state-outline,

@@ -11,8 +11,16 @@ const STATE_FADE_S = 1.2; // plan section 4.6
 const HEADWATER_FADE_S = 0.2;
 const HEADWATER_PULSE_S = 1.0;
 const TERMINUS_FADE_S = 0.5;
-const LABEL_HOLD_S = 3.0; // plan section 4.2: "fades after 3s"
-const LABEL_FADE_S = 0.5;
+// Labels ride the drawing tip, so their lifetime is tied to the draw, not to
+// a flat timer. The plan (section 4.2) said "fades after 3s" from the river's
+// start; in practice that fades the label out mid-draw for every river longer
+// than ~3s of drawing (i.e. all but two), and — because five tributaries all
+// start at the same beat — pops five labels on and off together for no reason
+// visible on screen. Fade in at the headwater, follow the tip, then fade out a
+// beat after the river reaches its terminus.
+const LABEL_FADE_IN_S = 0.4;
+const LABEL_HOLD_AFTER_END_S = 1.2;
+const LABEL_FADE_S = 0.6;
 
 function el(name, attrs = {}) {
   const node = document.createElementNS(SVG_NS, name);
@@ -95,19 +103,36 @@ function buildScene(map, container) {
   return { svg, stateEls, rivers };
 }
 
-// Base sizes are in screen pixels; `scale` (current viewBox width / the map's
-// native width) converts them to user-space units so dots and labels stay a
-// constant apparent size on screen as the camera zooms in and out. Stroke
-// widths don't need this — they use vector-effect: non-scaling-stroke (CSS).
+// Base sizes are in screen pixels; `scale` (user-space units per screen pixel,
+// from the camera box against the SVG's laid-out box) converts them to
+// user-space units so dots, labels and river strokes stay a constant apparent
+// size as the camera zooms in and out — and, just as importantly, at any
+// viewport width. (Scaling by the map's native 1000 instead of the rendered
+// width made everything shrink with the screen: ~4px labels and hairline
+// rivers on a 390px phone.)
 const HEADWATER_DOT_PX = 3;
 const HEADWATER_PULSE_MAX_PX = 18;
 const TERMINUS_DOT_PX = 3;
+const RIVER_STROKE_PX = 1.5;
 const LABEL_FONT_PX = 11;
 const LABEL_OFFSET_PX = 8;
 
+// How many user-space units one screen pixel is worth right now. preserveAspect
+// Ratio is the default "meet", so the effective zoom is whichever of the two
+// axes is the tighter fit; taking the min keeps sizes right whether the box or
+// the element is the taller of the two.
+function userUnitsPerScreenPx(svg, box, mapWidth) {
+  const rect = svg.getBoundingClientRect();
+  const pxPerUnit = Math.min(
+    rect.width > 0 ? rect.width / box.w : Infinity,
+    rect.height > 0 ? rect.height / box.h : Infinity
+  );
+  return pxPerUnit > 0 && Number.isFinite(pxPerUnit) ? 1 / pxPerUnit : box.w / mapWidth;
+}
+
 function renderAt(t, scene, camera, endT, mapWidth) {
   const box = cameraBoxAt(t, camera, endT);
-  const scale = box.w / mapWidth;
+  const scale = userUnitsPerScreenPx(scene.svg, box, mapWidth);
   scene.svg.setAttribute('viewBox', `${box.x.toFixed(1)} ${box.y.toFixed(1)} ${box.w.toFixed(1)} ${box.h.toFixed(1)}`);
 
   for (const { path, enterT } of scene.stateEls.values()) {
@@ -119,8 +144,12 @@ function renderAt(t, scene, camera, endT, mapWidth) {
     const duration = cfg.endT - cfg.startT;
     const fraction = duration > 0 ? clamp01((t - cfg.startT) / duration) : (t >= cfg.startT ? 1 : 0);
 
+    // pathLength="1" normalises the path to one unit, so a dash of 1 unit
+    // followed by a gap of 1 unit, shifted by (1 - fraction), reveals exactly
+    // the first `fraction` of the line, growing from the headwater.
     path.style.strokeDasharray = '1';
     path.style.strokeDashoffset = String(1 - fraction);
+    path.style.strokeWidth = (RIVER_STROKE_PX * scale).toFixed(3);
 
     headwaterDot.style.opacity = clamp01((t - cfg.startT) / HEADWATER_FADE_S);
     headwaterDot.setAttribute('r', (HEADWATER_DOT_PX * scale).toFixed(2));
@@ -139,13 +168,16 @@ function renderAt(t, scene, camera, endT, mapWidth) {
       terminusDot.style.opacity = fraction >= 1 ? String(clamp01((t - cfg.endT) / TERMINUS_FADE_S)) : '0';
     }
 
-    const labelAge = t - cfg.startT;
-    if (labelAge < 0) {
+    // Fade in as the river leaves its headwater, ride the tip for the whole
+    // draw, then fade out a beat after it lands at its terminus.
+    const fadeOutStart = cfg.endT + LABEL_HOLD_AFTER_END_S;
+    if (t < cfg.startT) {
       label.style.opacity = '0';
     } else {
-      const opacity = labelAge <= LABEL_HOLD_S
-        ? 1
-        : clamp01(1 - (labelAge - LABEL_HOLD_S) / LABEL_FADE_S);
+      const opacity = Math.min(
+        clamp01((t - cfg.startT) / LABEL_FADE_IN_S),
+        clamp01(1 - (t - fadeOutStart) / LABEL_FADE_S)
+      );
       label.style.opacity = String(opacity);
       if (opacity > 0) {
         const pt = path.getPointAtLength(fraction * totalLength);
@@ -273,7 +305,14 @@ async function init() {
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reducedMotion) {
-    renderAt(endT, scene, camera, endT, map.width);
+    // One static frame — but renderAt sizes dots/labels/strokes off the SVG's
+    // laid-out box, which isn't final on the first pass, so re-render once
+    // layout has settled and again if the window is resized (the animated path
+    // self-corrects every frame; this one has no second chance).
+    const draw = () => renderAt(endT, scene, camera, endT, map.width);
+    draw();
+    requestAnimationFrame(draw);
+    window.addEventListener('resize', draw);
     return;
   }
 
