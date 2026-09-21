@@ -357,11 +357,18 @@ async function main() {
     return pathLength(parentPoints.slice(0, best.i + 1));
   }
 
+  // Tributaries don't just clear the "no earlier than the trunk" bar by the
+  // smallest possible margin (that produced all 10 rivers sprouting near
+  // t=0 at once, reading as scattered noise rather than a river system).
+  // Hold them back to a distinct second phase — matches the plan's own beat
+  // sheet, where the primary rivers draw solo through ~t=20 before
+  // tributaries start joining in around t=12-24 of a ~34s sequence.
+  const TRIBUTARY_PHASE_START = 0.4 * DRAW_WINDOW_SECONDS;
   for (const name of TRIBUTARY_ORDER) {
     const parentName = projectedRivers[name].joins;
     const parentArrival = timing[parentName].startT + confluenceArcLength(name, parentName) / pxPerSecond;
     const childTimeToConfluence = projectedRivers[name].arcLength / pxPerSecond;
-    const startT = Math.max(0, parentArrival - childTimeToConfluence);
+    const startT = Math.max(TRIBUTARY_PHASE_START, parentArrival - childTimeToConfluence);
     timing[name] = { startT };
     const arrival = startT + childTimeToConfluence;
     if (arrival < parentArrival - 1e-6) {
@@ -397,9 +404,14 @@ async function main() {
   // ---- Camera keyframes (union bbox of drawn geometry over time) ------
   const endT = Math.max(...Object.entries(timing).map(([n, t]) => t.startT + projectedRivers[n].arcLength / pxPerSecond));
   const CAMERA_STEPS = 40;
-  const camera = [];
-  for (let s = 0; s <= CAMERA_STEPS; s++) {
-    const t = (s / CAMERA_STEPS) * endT;
+  const MARGIN = 40;
+  // A floor on box width/height so the camera never zooms in so tight that
+  // headwaters clustered ~100-150px apart (central Colorado) look randomly
+  // scattered across the whole frame at extreme magnification.
+  const MIN_BOX = 220;
+  const allHeadwaters = Object.values(projectedRivers).map((r) => r.headwaterPx);
+
+  function boxAtTime(t) {
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     for (const [name, r] of Object.entries(projectedRivers)) {
       const localT = t - timing[name].startT;
@@ -411,14 +423,36 @@ async function main() {
         if (y < minY) minY = y; if (y > maxY) maxY = y;
       }
     }
-    if (minX === Infinity) { minX = minY = 0; maxX = WIDTH; maxY = HEIGHT; }
-    const margin = 40;
+    if (minX === Infinity) {
+      // Nothing drawn yet (t=0): frame the headwater cluster, not the full
+      // canvas — avoids a jarring zoomed-out flash before the first river
+      // starts moving.
+      for (const [x, y] of allHeadwaters) {
+        if (x < minX) minX = x; if (x > maxX) maxX = x;
+        if (y < minY) minY = y; if (y > maxY) maxY = y;
+      }
+    }
+    return { minX, minY, maxX, maxY };
+  }
+
+  const camera = [];
+  for (let s = 0; s <= CAMERA_STEPS; s++) {
+    const t = (s / CAMERA_STEPS) * endT;
+    let { minX, minY, maxX, maxY } = boxAtTime(t);
+
+    let w = maxX - minX + MARGIN * 2;
+    let h = maxY - minY + MARGIN * 2;
+    const cx = (minX + maxX) / 2;
+    const cy = (minY + maxY) / 2;
+    if (w < MIN_BOX) w = MIN_BOX;
+    if (h < MIN_BOX) h = MIN_BOX;
+
     camera.push({
       t: Number(t.toFixed(3)),
-      x: Number((minX - margin).toFixed(1)),
-      y: Number((minY - margin).toFixed(1)),
-      w: Number((maxX - minX + margin * 2).toFixed(1)),
-      h: Number((maxY - minY + margin * 2).toFixed(1)),
+      x: Number((cx - w / 2).toFixed(1)),
+      y: Number((cy - h / 2).toFixed(1)),
+      w: Number(w.toFixed(1)),
+      h: Number(h.toFixed(1)),
     });
   }
 
