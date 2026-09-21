@@ -53,7 +53,10 @@ npm run build-map
   from its cited named-confluence source; each case is flagged with a note, not silently resolved.
 - **M2 — done.** Static final-frame render of all layers from `data/map.json`, screenshot-reviewed
   at desktop and 390px mobile.
-- M3–M8: not started. See the plan doc's milestone list.
+- **M3 — done.** `renderAt(t)` director: river draw, state reveal, camera, headwater/terminus
+  markers, tip-tracking labels. Pausable/seekable clock, `prefers-reduced-motion` support, and a
+  `?debug=1` scrub slider. Screenshot-reviewed at t = 2, 6, 12, 20, 30, END.
+- M4–M8: not started. See the plan doc's milestone list.
 
 ## Before publishing
 
