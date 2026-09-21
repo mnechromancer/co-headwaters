@@ -1,0 +1,96 @@
+{
+  "_readme": "Seeds, source citations, and terminus rules for build-map.mjs. headwater_coord/citation_url/citation_note are filled by the UM-trace + manual validation step in M1 — do not hand-type coordinates here without a real citation (see plan section 3 and CLAUDE.md 'never fabricate data').",
+  "rivers": [
+    {
+      "name": "Colorado",
+      "seed_comid_hint": null,
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "US-Mexico border",
+      "terminus_coord": null,
+      "joins": null
+    },
+    {
+      "name": "Green",
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "confluence with Colorado",
+      "terminus_coord": null,
+      "joins": "Colorado"
+    },
+    {
+      "name": "Yampa",
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "confluence with Green",
+      "terminus_coord": null,
+      "joins": "Green"
+    },
+    {
+      "name": "Gunnison",
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "confluence with Colorado",
+      "terminus_coord": null,
+      "joins": "Colorado"
+    },
+    {
+      "name": "San Juan",
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "confluence with Colorado",
+      "terminus_coord": null,
+      "joins": "Colorado"
+    },
+    {
+      "name": "Dolores",
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "confluence with Colorado",
+      "terminus_coord": null,
+      "joins": "Colorado"
+    },
+    {
+      "name": "Rio Grande",
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "Gulf of Mexico",
+      "terminus_coord": null,
+      "joins": null
+    },
+    {
+      "name": "Arkansas",
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "confluence with Mississippi",
+      "terminus_coord": null,
+      "joins": null
+    },
+    {
+      "name": "South Platte",
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "confluence with North Platte / Missouri, at North Platte, NE",
+      "terminus_coord": null,
+      "joins": "North Platte"
+    },
+    {
+      "name": "North Platte",
+      "headwater_coord": null,
+      "citation_url": null,
+      "citation_note": null,
+      "terminus_policy": "confluence with Missouri",
+      "terminus_coord": null,
+      "joins": null
+    }
+  ]
+}

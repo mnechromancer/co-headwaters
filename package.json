@@ -1,0 +1,21 @@
+{
+  "name": "co-headwaters",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Colorado river headwaters intro animation + crisis dashboard shell",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build-map": "node scripts/build-map.mjs",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "d3-geo": "^3.1.1",
+    "topojson-simplify": "^3.0.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}

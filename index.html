@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Headwaters</title>
+  <meta name="description" content="Where Colorado's rivers begin, and who decides what happens to the water." />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+  <section id="intro" aria-hidden="true"></section>
+
+  <ol id="caption-list" class="visually-hidden"></ol>
+
+  <main id="dashboard"></main>
+
+  <noscript>
+    <main style="max-width:640px;margin:0 auto;padding:48px 24px;">
+      <p>This page uses an animated intro that requires JavaScript. The captions it plays are
+      not yet available as static text (M4) — check back once the intro sequence ships, or see
+      the <a href="https://github.com/mnechromancer/co-headwaters">source repo</a> for progress.</p>
+    </main>
+  </noscript>
+
+  <script type="module" src="assets/intro.js"></script>
+  <script type="module" src="assets/dashboard.js"></script>
+</body>
+</html>

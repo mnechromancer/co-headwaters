@@ -1,0 +1,162 @@
+/* co-headwaters — shared stylesheet. Plain CSS, no build step, no framework:
+   deployable as-is on GitHub Pages. Light theme only — this is a different
+   visual system from the portfolio site and from the headwaters organizing
+   site; don't pull tokens from either. */
+
+:root {
+  --bg:         #F6F3EC;
+  --ink:        #1E2A33;
+  --muted:      #5B6770;
+  --river:      #2C6E91;
+  --state-line: #C9C4B8;
+  --cta:        #B4471F;
+  --border:     #C9C4B8;
+
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+a { color: var(--river); }
+a:hover { text-decoration: none; }
+
+img, svg { max-width: 100%; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── Intro ───────────────────────────────────────────────────────────── */
+
+#intro {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#intro svg {
+  width: 100%;
+  max-width: 960px;
+}
+
+#caption {
+  font-family: var(--sans);
+  font-size: 18px;
+  color: var(--ink);
+  max-width: 640px;
+  text-align: center;
+  margin: 24px auto 0;
+  padding: 0 24px;
+}
+
+#skip {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+#skip:hover { color: var(--ink); border-color: var(--ink); }
+
+.cta-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--cta);
+  padding: 24px 28px;
+  max-width: 520px;
+  text-align: center;
+  margin: 24px auto 0;
+}
+
+.cta-button {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--cta);
+  border: none;
+  padding: 12px 22px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+/* ── Dashboard ───────────────────────────────────────────────────────── */
+
+#dashboard {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 24px 96px;
+  display: none;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.panel h2 {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.empty-state {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  padding: 14px 16px;
+}
+
+.stale-warning {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  padding: 8px 12px;
+  margin-top: 8px;
+}
+
+footer {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  padding: 24px;
+}
