@@ -46,9 +46,11 @@ npm run build-map
 ## Status
 
 - **M0 — done.** Repo scaffold, GitHub Pages via Actions, tokens.
-- **M1 — in progress.** `build-map.mjs`: NLDI upstream/downstream trace, dedupe, terminus
-  clipping, projection, simplification. Stops for human review of sourced headwater coordinates
-  before any further milestone starts.
+- **M1 — done, awaiting review.** `build-map.mjs` traces all 10 rivers live from USGS NLDI,
+  dedupes/clips/projects/simplifies into `data/map.json`, and writes
+  `scripts/citations-report.md` + `scripts/final-frame.svg` for review. **Do not start M2 until
+  the citation report has been reviewed** — several rivers' true network headwater sits 10-50km
+  from its cited named-confluence source; each case is flagged with a note, not silently resolved.
 - M2–M8: not started. See the plan doc's milestone list.
 
 ## Before publishing
