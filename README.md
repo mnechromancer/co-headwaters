@@ -51,7 +51,9 @@ npm run build-map
   `scripts/citations-report.md` + `scripts/final-frame.svg` for review. **Do not start M2 until
   the citation report has been reviewed** — several rivers' true network headwater sits 10-50km
   from its cited named-confluence source; each case is flagged with a note, not silently resolved.
-- M2–M8: not started. See the plan doc's milestone list.
+- **M2 — done.** Static final-frame render of all layers from `data/map.json`, screenshot-reviewed
+  at desktop and 390px mobile.
+- M3–M8: not started. See the plan doc's milestone list.
 
 ## Before publishing
 
