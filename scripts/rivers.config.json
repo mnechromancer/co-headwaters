@@ -1,96 +1,107 @@
 {
-  "_readme": "Seeds, source citations, and terminus rules for build-map.mjs. headwater_coord/citation_url/citation_note are filled by the UM-trace + manual validation step in M1 — do not hand-type coordinates here without a real citation (see plan section 3 and CLAUDE.md 'never fabricate data').",
+  "_readme": "Seeds are citation-backed headwater coordinates (see citation_note/citation_url). build-map.mjs snaps each to the NLDI flowline network and runs a short UM trace to confirm it's at (or immediately adjacent to) the network's own farthest-upstream reach before tracing downstream. Coordinates are [lon, lat]. Do not hand-edit headwater_coord below without a citation — see CLAUDE.md 'never fabricate data'.",
   "rivers": [
     {
       "name": "Colorado",
-      "seed_comid_hint": null,
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "US-Mexico border",
+      "seed_coord": [-105.82611, 40.47222],
+      "citation_url": "https://en.wikipedia.org/wiki/Colorado_River",
+      "citation_note": "La Poudre Pass / La Poudre Pass Lake, NW corner of Rocky Mountain National Park, CO; Wikipedia infobox cites USGS GNIS. Long-standing uncontested consensus point.",
+      "terminus_policy": "US-Mexico border (natural NLDI data end, do not extrapolate)",
       "terminus_coord": null,
+      "trace_distance_km": 2400,
       "joins": null
     },
     {
-      "name": "Green",
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "confluence with Colorado",
-      "terminus_coord": null,
-      "joins": "Colorado"
-    },
-    {
-      "name": "Yampa",
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "confluence with Green",
-      "terminus_coord": null,
-      "joins": "Green"
-    },
-    {
-      "name": "Gunnison",
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "confluence with Colorado",
-      "terminus_coord": null,
-      "joins": "Colorado"
-    },
-    {
-      "name": "San Juan",
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "confluence with Colorado",
-      "terminus_coord": null,
-      "joins": "Colorado"
-    },
-    {
-      "name": "Dolores",
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "confluence with Colorado",
-      "terminus_coord": null,
-      "joins": "Colorado"
-    },
-    {
       "name": "Rio Grande",
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "Gulf of Mexico",
+      "seed_coord": [-107.54306, 37.79750],
+      "citation_url": "https://en.wikipedia.org/wiki/Rio_Grande",
+      "citation_note": "Canby Mountain area, Continental Divide, Rio Grande National Forest, adjacent to the Stony Pass headwater area. GNIS-cited. Note: a more distant tributary source near Tundra Top/Pole Creek (37.85167, -107.42444) is sometimes cited as the hydrologically longest origin point.",
+      "terminus_policy": "Gulf of Mexico (natural NLDI data end)",
       "terminus_coord": null,
+      "trace_distance_km": 3300,
       "joins": null
     },
     {
       "name": "Arkansas",
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "confluence with Mississippi",
-      "terminus_coord": null,
+      "seed_coord": [-106.34389, 39.25833],
+      "citation_url": "https://en.wikipedia.org/wiki/Arkansas_River",
+      "citation_note": "Confluence of East Fork Arkansas River and Tennessee Creek, near Leadville/Tennessee Pass, CO. GNIS-cited.",
+      "terminus_policy": "confluence with the Mississippi River",
+      "terminus_coord": [-91.10833, 33.77500],
+      "terminus_coord_note": "Near former Napoleon, AR (Desha County). Napoleon eroded into the Mississippi in the 1870s-1900s; the confluence has migrated somewhat since and this is a historical/approximate clip point.",
+      "trace_distance_km": 2600,
       "joins": null
-    },
-    {
-      "name": "South Platte",
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "confluence with North Platte / Missouri, at North Platte, NE",
-      "terminus_coord": null,
-      "joins": "North Platte"
     },
     {
       "name": "North Platte",
-      "headwater_coord": null,
-      "citation_url": null,
-      "citation_note": null,
-      "terminus_policy": "confluence with Missouri",
-      "terminus_coord": null,
+      "seed_coord": [-106.39306, 40.55028],
+      "citation_url": "https://en.wikipedia.org/wiki/North_Platte_River",
+      "citation_note": "Confluence of Grizzly Creek and Little Grizzly Creek, Jackson County, CO (North Park). GNIS-cited.",
+      "terminus_policy": "confluence with the Missouri River, near Plattsmouth, NE (after joining South Platte to form the Platte)",
+      "terminus_coord": [-95.89389, 41.00528],
+      "terminus_coord_note": "Plattsmouth, NE city-center coordinate used as a clip target, not a surveyed confluence point — https://en.wikipedia.org/wiki/Plattsmouth,_Nebraska. Actual mouth is close by; script warns if the nearest network vertex is >~5km off.",
+      "trace_distance_km": 1900,
       "joins": null
+    },
+    {
+      "name": "Green",
+      "seed_coord": [-109.67167, 43.15361],
+      "citation_url": "https://en.wikipedia.org/wiki/Green_River_(Colorado_River)",
+      "citation_note": "West slope of the Wind River Range, N. Sublette County, WY. GNIS-cited.",
+      "terminus_policy": "confluence with the Colorado River (Canyonlands NP, UT) — clipped by dedupe against Colorado's claimed comids",
+      "terminus_coord": null,
+      "trace_distance_km": 1400,
+      "joins": "Colorado"
+    },
+    {
+      "name": "Yampa",
+      "seed_coord": [-106.89972, 40.15833],
+      "citation_url": "https://en.wikipedia.org/wiki/Yampa_River",
+      "citation_note": "GNIS start-of-name point: confluence of Bear River and Phillips Creek, near the town of Yampa, CO. Note: the furthest-upstream continuous headwater is arguably the Bear River fork itself, sourced in the Flat Tops Wilderness above Stillwater Reservoir (39.97833, -107.16583) — also GNIS-cited. Using the named-river point per plan's naming convention; flag for review.",
+      "terminus_policy": "confluence with the Green River (Echo Park, Dinosaur NM) — clipped by dedupe against Green's claimed comids",
+      "terminus_coord": null,
+      "trace_distance_km": 400,
+      "joins": "Green"
+    },
+    {
+      "name": "Gunnison",
+      "seed_coord": [-106.79083, 38.97000],
+      "citation_url": "https://en.wikipedia.org/wiki/Gunnison_River",
+      "citation_note": "Seeded at the Taylor River's source (between Star Peak and Crystal Peak, Elk Mountains) rather than the Almont confluence, since Taylor is the longer of the two forks feeding the Gunnison — this is the true farthest headwater per plan section 3's method. Taylor coordinate cites the Columbia Gazetteer of the World (secondary source, not GNIS directly) — flag for review.",
+      "terminus_policy": "confluence with the Colorado River (Grand Junction, CO) — clipped by dedupe against Colorado's claimed comids",
+      "terminus_coord": null,
+      "trace_distance_km": 500,
+      "joins": "Colorado"
+    },
+    {
+      "name": "San Juan",
+      "seed_coord": [-106.90056, 37.36528],
+      "citation_url": "https://en.wikipedia.org/wiki/San_Juan_River_(Colorado_River)",
+      "citation_note": "Confluence of East Fork and West Fork, Archuleta County, near Wolf Creek Pass / South San Juan Wilderness. GNIS-cited.",
+      "terminus_policy": "confluence with the Colorado River, historic site now under Lake Powell near Rainbow Bridge, UT — clipped by dedupe against Colorado's claimed comids",
+      "terminus_coord": null,
+      "trace_distance_km": 750,
+      "joins": "Colorado"
+    },
+    {
+      "name": "Dolores",
+      "seed_coord": [-107.87972, 37.72167],
+      "citation_url": "https://en.wikipedia.org/wiki/Dolores_River",
+      "citation_note": "Tin Can Basin near Hermosa Peak, San Miguel Mountains, ~5 mi south of Lizard Head Pass, San Juan National Forest. GNIS-cited.",
+      "terminus_policy": "confluence with the Colorado River, near Dewey Bridge, UT — clipped by dedupe against Colorado's claimed comids",
+      "terminus_coord": null,
+      "trace_distance_km": 550,
+      "joins": "Colorado"
+    },
+    {
+      "name": "South Platte",
+      "seed_coord": [-105.74028, 39.01111],
+      "citation_url": "https://en.wikipedia.org/wiki/South_Platte_River",
+      "citation_note": "Confluence of South Fork and Middle Fork, ~15 mi SE of Fairplay, Park County (South Park). GNIS-cited.",
+      "terminus_policy": "confluence with the North Platte River, forming the Platte, near North Platte, NE — clipped by dedupe against North Platte's claimed comids",
+      "terminus_coord": null,
+      "trace_distance_km": 850,
+      "joins": "North Platte"
     }
   ]
 }
