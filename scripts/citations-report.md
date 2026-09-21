@@ -1,6 +1,6 @@
 # Headwater citation review
 
-Generated 2026-09-21T04:30:25.860Z. Review every row before starting M2 — see HEADWATERS_INTRO_PLAN.md section 3.
+Generated 2026-09-21T04:40:32.469Z. Review every row before starting M2 — see HEADWATERS_INTRO_PLAN.md section 3.
 
 "NLDI-derived" is the actual drawn start point: the farthest-upstream flowline the network resolves to within the UM trace distance (converged/re-checked at up to 5x that distance for every river with a >3km delta below). Where it differs meaningfully from the cited source, that's flagged for human judgment — it usually means the true network terminus sits at a slightly different point (e.g. a pass or a different fork) than the named confluence, not an error.
 

@@ -423,6 +423,11 @@ async function main() {
   }
 
   // ---- Emit map.json ---------------------------------------------------
+  const statePathGen = geoPath(projection);
+  const statePathByName = Object.fromEntries(
+    relevantStates.map((f) => [f.properties.name, statePathGen(f)])
+  );
+
   const mapJson = {
     generated: new Date().toISOString(),
     width: WIDTH,
@@ -435,9 +440,14 @@ async function main() {
       startT: Number(timing[name].startT.toFixed(3)),
       endT: Number((timing[name].startT + r.arcLength / pxPerSecond).toFixed(3)),
       headwaterPx: r.headwaterPx,
+      terminusPx: r.points.at(-1),
       joins: r.joins,
     })),
-    states: Object.entries(stateEnterT).map(([name, enterT]) => ({ name, enterT: Number(enterT.toFixed(3)) })),
+    states: Object.entries(stateEnterT).map(([name, enterT]) => ({
+      name,
+      enterT: Number(enterT.toFixed(3)),
+      path: statePathByName[name],
+    })),
     camera,
   };
 
@@ -446,7 +456,6 @@ async function main() {
   console.log(`\nWrote data/map.json (${(gzipSize / 1024).toFixed(1)} KB uncompressed)`);
 
   // ---- Final-frame SVG for visual review --------------------------------
-  const stateProjector = geoPath(projection);
   const riverPaths = Object.entries(projectedRivers)
     .map(([name, r]) => `<path d="${toPathD(r.points)}" fill="none" stroke="#2C6E91" stroke-width="1.5" />`)
     .join('\n  ');
@@ -457,7 +466,7 @@ async function main() {
     })
     .join('\n  ');
   const statePaths = relevantStates
-    .map((f) => `<path d="${stateProjector(f)}" fill="none" stroke="#C9C4B8" stroke-width="1" />`)
+    .map((f) => `<path d="${statePathByName[f.properties.name]}" fill="none" stroke="#C9C4B8" stroke-width="1" />`)
     .join('\n  ');
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">

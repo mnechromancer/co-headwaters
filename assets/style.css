@@ -60,6 +60,30 @@ img, svg { max-width: 100%; }
   max-width: 960px;
 }
 
+.state-outline {
+  fill: none;
+  stroke: var(--state-line);
+  stroke-width: 1;
+}
+
+.river-line {
+  fill: none;
+  stroke: var(--river);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.headwater-dot {
+  fill: var(--river);
+}
+
+.terminus-dot {
+  fill: none;
+  stroke: var(--river);
+  stroke-width: 1;
+}
+
 #caption {
   font-family: var(--sans);
   font-size: 18px;
