@@ -64,6 +64,7 @@ img, svg { max-width: 100%; }
   fill: none;
   stroke: var(--state-line);
   stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
 .river-line {
@@ -72,16 +73,71 @@ img, svg { max-width: 100%; }
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.state-outline,
+.river-line,
+.headwater-dot,
+.headwater-pulse,
+.terminus-dot,
+.river-label {
+  transition: none; /* renderAt(t) drives every value directly, every frame */
 }
 
 .headwater-dot {
   fill: var(--river);
 }
 
+.headwater-pulse {
+  fill: none;
+  stroke: var(--river);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+}
+
 .terminus-dot {
   fill: none;
   stroke: var(--river);
   stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+}
+
+.river-label {
+  font-family: var(--mono);
+  fill: var(--ink);
+  text-anchor: middle;
+  opacity: 0;
+}
+
+.debug-scrubber {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.debug-scrubber input[type='range'] {
+  flex: 1;
+}
+
+.debug-scrubber button {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
 }
 
 #caption {
