@@ -133,7 +133,10 @@ test('markers and labels keep a constant on-screen size as the camera zooms', as
     sizes.push(await page.evaluate(() => {
       const svg = document.querySelector('#intro svg');
       const pxPerUnit = svg.getScreenCTM().a;
-      const dot = document.querySelector('.headwater-dot').getBoundingClientRect().width;
+      // Size from the attributes renderAt sets, times the screen transform —
+      // not getBoundingClientRect, whose padding for SVG shapes differs
+      // between Chromium builds (6px here, 7.16px in the CI headless shell).
+      const dot = 2 * Number(document.querySelector('.headwater-dot').getAttribute('r')) * pxPerUnit;
       // Hidden labels keep whatever size they last had; only visible ones
       // are re-sized each frame.
       const fonts = [...document.querySelectorAll('.river-label')]
