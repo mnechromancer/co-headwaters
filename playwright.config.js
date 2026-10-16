@@ -4,6 +4,8 @@ const PORT = 4173;
 
 export default defineConfig({
   testDir: 'tests',
+  // The frame-rate probe is machine-dependent; it runs only via `npm run perf`.
+  testIgnore: process.env.PERF ? [] : ['**/perf.spec.js'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? 'github' : 'list',

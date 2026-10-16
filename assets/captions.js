@@ -82,3 +82,16 @@ export function captionAt(t, schedule) {
   }
   return { index: -1, opacity: 0 };
 }
+
+// After the last caption: the call-to-action card holds (plan 2.5: button
+// to advance early, auto-advance after 10 s), then the map moves into the
+// dashboard's basin panel.
+export const CTA_FADE_S = 0.4;
+export const CTA_HOLD_S = 10;
+export const TRANSITION_S = 1.2;
+
+export function timeline(schedule) {
+  const introEnd = schedule.end;
+  const ctaEnd = introEnd + CTA_HOLD_S;
+  return { introEnd, ctaEnd, end: ctaEnd + TRANSITION_S };
+}

@@ -12,7 +12,9 @@
     "test": "playwright test",
     "test:update": "playwright test --update-snapshots",
     "check-copy": "node scripts/check-copy.mjs",
-    "build-copy": "node scripts/check-copy.mjs --write"
+    "build-copy": "node scripts/check-copy.mjs --write",
+    "perf": "PERF=1 playwright test tests/perf.spec.js --project=mobile",
+    "check-data": "node scripts/check-data.mjs"
   },
   "dependencies": {
     "d3-geo": "^3.1.1",
@@ -20,6 +22,8 @@
     "us-atlas": "^3.0.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.48.0"
+    "@playwright/test": "^1.48.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
   }
 }

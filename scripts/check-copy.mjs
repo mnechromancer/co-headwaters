@@ -111,6 +111,7 @@ for (const c of copy.captions) {
 }
 
 if (!copy.cta?.text) errors.push('cta: missing text');
+if (!copy.cta?.button) errors.push('cta: missing button label');
 if (copy.cta && copy.cta.approved !== true) shipBlockers.push('CTA: wording not approved');
 
 // ---- Crypto vocabulary gate (plan 0.2, acceptance criteria) ----------------
@@ -154,34 +155,47 @@ function esc(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-const INDENT = '    ';
-const listHtml = copy.captions
-  .map((c) => {
-    const asOf = c.as_of ? ` <small class="as-of">${esc(formatAsOf(c.as_of))}</small>` : '';
-    return `${INDENT}<li data-id="${esc(c.id)}" data-cue="${esc(JSON.stringify(c.cue))}"><span class="caption-text">${esc(fill(c.text))}</span>${asOf}</li>`;
-  })
-  .join('\n');
-
-const START = '<!-- captions:start (generated from data/copy.json by scripts/check-copy.mjs; do not edit) -->';
-const END = '<!-- captions:end -->';
-const indexPath = join(ROOT, 'index.html');
-const index = readFileSync(indexPath, 'utf8');
-const startAt = index.indexOf(START);
-const endAt = index.indexOf(END);
-if (startAt === -1 || endAt === -1) {
-  errors.push('index.html: caption markers not found');
-} else {
-  const current = index.slice(startAt + START.length, endAt);
-  const wanted = `\n${listHtml}\n${INDENT.slice(2)}`;
-  if (current !== wanted) {
-    if (WRITE) {
-      writeFileSync(indexPath, index.slice(0, startAt + START.length) + wanted + index.slice(endAt));
-      console.log('Rewrote caption list in index.html');
-    } else {
-      errors.push('index.html: caption list is out of date with data/copy.json (run npm run build-copy)');
-    }
+// Each generated block sits between a start and an end marker in index.html;
+// the end marker's own indentation is kept, the lines between are indented
+// one level deeper.
+function syncBlock(index, name, lines) {
+  const START = `<!-- ${name}:start (generated from data/copy.json by scripts/check-copy.mjs; do not edit) -->`;
+  const END = `<!-- ${name}:end -->`;
+  const startAt = index.indexOf(START);
+  const endAt = index.indexOf(END);
+  if (startAt === -1 || endAt === -1) {
+    errors.push(`index.html: ${name} markers not found`);
+    return index;
   }
+  const lineStart = index.lastIndexOf('\n', startAt) + 1;
+  const indent = index.slice(lineStart, startAt).match(/^\s*/)[0];
+  const endIndent = indent.slice(2);
+  const wanted = `\n${lines.map((l) => indent + l).join('\n')}\n${endIndent}`;
+  if (index.slice(startAt + START.length, endAt) === wanted) return index;
+  if (!WRITE) {
+    errors.push(`index.html: ${name} block is out of date with data/copy.json (run npm run build-copy)`);
+    return index;
+  }
+  console.log(`Rewrote ${name} block in index.html`);
+  return index.slice(0, startAt + START.length) + wanted + index.slice(endAt);
 }
+
+const captionLines = copy.captions.map((c) => {
+  const asOf = c.as_of ? ` <small class="as-of">${esc(formatAsOf(c.as_of))}</small>` : '';
+  return `<li data-id="${esc(c.id)}" data-cue="${esc(JSON.stringify(c.cue))}"><span class="caption-text">${esc(fill(c.text))}</span>${asOf}</li>`;
+});
+const ctaLines = copy.cta
+  ? [
+      `<p class="cta-text">${esc(copy.cta.text)}</p>`,
+      `<button type="button" id="enter" class="cta-button">${esc(copy.cta.button)}</button>`,
+    ]
+  : [];
+
+const indexPath = join(ROOT, 'index.html');
+const original = readFileSync(indexPath, 'utf8');
+let index = syncBlock(original, 'captions', captionLines);
+index = syncBlock(index, 'cta', ctaLines);
+if (WRITE && index !== original) writeFileSync(indexPath, index);
 
 // ---- Report -------------------------------------------------------------------
 
@@ -192,7 +206,7 @@ if (!errors.length) {
   for (const item of schedule.items) {
     console.log(`  ${item.id.padEnd(4)} ${item.start.toFixed(1).padStart(5)} - ${item.end.toFixed(1).padStart(5)}`);
   }
-  console.log(`  intro ends at ${schedule.end.toFixed(1)} s (CTA follows in M5)`);
+  console.log(`  intro ends at ${schedule.end.toFixed(1)} s (CTA appears)`);
 }
 
 if (shipBlockers.length) {

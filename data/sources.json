@@ -1,0 +1,11 @@
+{
+  "note": "Sources the dashboard expects freshness for (plan section 7.4). The watcher must report on these ids in status.json; a source missing from status.json is shown as not reported.",
+  "sources": [
+    { "id": "puc-25AL-0538G", "label": "PUC gas rate case (25AL-0538G)" },
+    { "id": "puc-electric", "label": "PUC electric proceedings" },
+    { "id": "denver-water-notices", "label": "Denver Water notices" },
+    { "id": "lake-powell-elevation", "label": "Lake Powell elevation" },
+    { "id": "reservoirs-earth", "label": "reservoirs.earth" },
+    { "id": "colorado-river-decisions", "label": "Colorado River decision documents" }
+  ]
+}

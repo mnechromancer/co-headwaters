@@ -1,0 +1,10 @@
+{
+  "generated": "2026-10-16T06:05:00Z",
+  "sources": [
+    { "id": "puc-25AL-0538G", "label": "PUC gas rate case", "cadence": "daily", "last_success": "2026-10-16T06:00:00Z", "last_error": null },
+    { "id": "puc-electric", "label": "PUC electric", "cadence": "daily", "last_success": "2026-10-13T06:00:00Z", "last_error": null },
+    { "id": "denver-water-notices", "label": "Denver Water notices", "cadence": "daily", "last_success": "2026-10-15T06:00:00Z", "last_error": "HTTP 503 from source" },
+    { "id": "lake-powell-elevation", "label": "Lake Powell elevation", "cadence": "hourly", "last_success": null, "last_error": null },
+    { "id": "reservoirs-earth", "label": "reservoirs.earth", "cadence": "weekly", "last_success": "2026-10-12T06:00:00Z", "last_error": null }
+  ]
+}

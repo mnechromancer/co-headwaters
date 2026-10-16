@@ -5,7 +5,11 @@
       "id": "C1",
       "kind": "fact",
       "text": "The Arkansas, Colorado, Platte, and Rio Grande all begin in Colorado.",
-      "cue": { "event": "riverStart", "river": "North Platte", "offset": 0.5 },
+      "cue": {
+        "event": "riverStart",
+        "river": "North Platte",
+        "offset": 0.5
+      },
       "source_label": "Water Education Colorado, Major River Basins",
       "source_url": "https://watereducationcolorado.org/water-101/hydrology-water-resources/major-river-basins/",
       "retrieved": "2026-09-20",
@@ -13,21 +17,13 @@
       "notes": "Plan: verified, quote \"the Arkansas, Colorado, Platte, and the Rio Grande\"."
     },
     {
-      "id": "C2",
-      "kind": "fact",
-      "text": "Most of Colorado's rivers begin in the Rocky Mountains and flow across state lines.",
-      "cue": { "event": "stateEnter", "state": "Texas" },
-      "source_label": "Water Education Colorado, Major River Basins",
-      "source_url": "https://watereducationcolorado.org/water-101/hydrology-water-resources/major-river-basins/",
-      "retrieved": "2026-09-20",
-      "verify_before_ship": false,
-      "notes": "Plan: verified."
-    },
-    {
       "id": "C3",
       "kind": "fact",
       "text": "The Colorado River supplies more than 40 million people in seven states and Mexico.",
-      "cue": { "event": "riverStart", "river": "Green" },
+      "cue": {
+        "event": "stateEnter",
+        "state": "Utah"
+      },
       "as_of": "2026-09-20",
       "source_label": "Water Education Colorado, Colorado River Basin",
       "source_url": "https://watereducationcolorado.org/water-101/hydrology-water-resources/major-river-basins/colorado-river-basin/",
@@ -36,90 +32,116 @@
       "notes": "Plan: verified. Optional 75% add not used: per a 2026-10-16 search summary the full sentence is 'less than 20 percent of the entire Colorado River Basin lies inside Colorado, but about 75 percent of the water that feeds the river originates here', attributed to the 2015 Colorado Water Plan. Read the page itself before adding it."
     },
     {
-      "id": "C3b",
-      "kind": "computed",
-      "text": "Water from these four systems crosses {statesCrossed} states.",
-      "cue": { "event": "stateEnter", "state": "Oklahoma" },
-      "derived_from": "data/map.json: states with at least 3 river vertices inside the state polygon (scripts/check-copy.mjs, statesCrossed)",
-      "verify_before_ship": true,
-      "notes": "Definition needs sign-off. Counts states a drawn river passes through, Colorado included. Not counted: states the water only borders (the Colorado River along California and Nevada, the Platte terminus on the Iowa/Missouri side), and Mississippi, which the Arkansas line touches with 2 vertices at its confluence (a state-boundary artifact; the map still fades Mississippi in at that moment)."
-    },
-    {
       "id": "C4",
       "kind": "fact",
       "text": "Denver Water reports natural streamflow ran at 22% of normal from April through July, the lowest in 110 years.",
-      "cue": { "event": "riverEnd", "river": "Colorado" },
-      "as_of": "2026-09-20",
-      "source_label": "Denver Water, board resolution, Aug. 26, 2026",
-      "source_url": "https://www.denverwater.org/tap/drought-conditions-worsen-denver-board-water-commissioners-declares-formal-end-lawn-watering",
+      "cue": {
+        "event": "riverStart",
+        "river": "Green"
+      },
+      "as_of": "2026-10-16",
+      "source_label": "Denver Water, Board Resolution #002a-2026, Aug. 26, 2026",
+      "source_url": "https://www.denverwater.org/drought/board-resolution-002a-2026",
       "retrieved": "2026-09-20",
-      "verify_before_ship": true,
-      "notes": "Open: confirm geographic scope (Denver Water supply basins vs statewide) and word the caption to match. The 22% figure did not appear in 2026-10-16 search summaries; Denver Water's Oct. 12 update cites runoff forecasts of 10-40% of normal. source_url is Denver Water's article on the Aug. 26 action; confirm it carries the figure or replace it with the resolution document."
+      "verify_before_ship": false,
+      "notes": "Re-confirmed 2026-10-16 from search results (the source pages are not fetchable from the build container). Denver Water reported natural streamflow April-July 2026 of 95,000 acre-feet, 22% of normal and the lowest since recordkeeping began 110 years ago; the board resolution repeats the figure. The figure is Denver Water's, for its own supply system, so the caption attributes it rather than stating it statewide."
     },
     {
       "id": "C5",
       "kind": "fact",
       "text": "Lake Powell and Lake Mead have reached record-low combined storage.",
-      "cue": { "event": "riverEnd", "river": "Arkansas" },
-      "as_of": "2026-09-20",
-      "source_label": "Western Water, Aug. 21, 2026",
-      "source_url": "https://www.western-water.com/2026/08/21/the-decision-colorado-river-gets-2-year-plan-amid-record-lows/",
+      "cue": {
+        "event": "stateEnter",
+        "state": "Oklahoma"
+      },
+      "as_of": "2026-10-16",
+      "source_label": "Reclamation data, as reported by The Salt Lake Tribune, July 17, 2026",
+      "source_url": "https://www.sltrib.com/news/environment/2026/07/17/combined-storage-lake-powell-lake/",
       "retrieved": "2026-09-20",
-      "verify_before_ship": true,
-      "notes": "Single secondary source. Verify against Reclamation (24-Month Study or operations data) before ship."
+      "verify_before_ship": false,
+      "notes": "Re-confirmed 2026-10-16 from search results (the source pages are not fetchable from the build container). Combined live storage fell to about 12,675,509 acre-feet on July 12, 2026, below the previous record low of 12,677,161 acre-feet (March 14, 2023), per Reclamation data; reporting through Oct. 8 says storage has kept falling.",
+      "also": [
+        "https://www.western-water.com/2026/08/21/the-decision-colorado-river-gets-2-year-plan-amid-record-lows/",
+        "https://weather.com/2026/10/08/news/climate/americas-two-largest-reservoirs-are-hitting-record-lows"
+      ]
+    },
+    {
+      "id": "C3b",
+      "kind": "computed",
+      "text": "Water from these four systems crosses {statesCrossed} states.",
+      "cue": {
+        "event": "riverEnd",
+        "river": "Colorado"
+      },
+      "derived_from": "data/map.json: states with at least 3 river vertices inside the state polygon (scripts/check-copy.mjs, statesCrossed)",
+      "verify_before_ship": false,
+      "notes": "Definition approved 2026-10-16. Counts states a drawn river passes through, Colorado included. Not counted: states the water only borders (the Colorado River along California and Nevada, the Platte terminus on the Iowa/Missouri side), and Mississippi, which the Arkansas line touches with 2 vertices at its confluence (a state-boundary artifact; the map still fades Mississippi in at that moment)."
     },
     {
       "id": "C6",
       "kind": "fact",
-      "text": "On August 21, Reclamation set a two-year operating plan for 2027–2028 inside a ten-year framework. Lower Basin cuts are mandatory: 1.25 million acre-feet per year. Upper Basin participation is voluntary.",
-      "cue": { "event": "end" },
-      "as_of": "2026-09-20",
-      "source_label": "Bureau of Reclamation, Record of Decision; Western Water, Aug. 21, 2026",
-      "source_url": "https://www.usbr.gov/ColoradoRiverBasin/post2026/decision-doc/P26_RecordofDecision_Final.pdf",
+      "text": "On August 21, the Interior Department set a two-year plan for 2027–2028: mandatory Lower Basin cuts of 1.25 million acre-feet a year, voluntary participation upstream.",
+      "cue": {
+        "event": "riverEnd",
+        "river": "Arkansas"
+      },
+      "as_of": "2026-10-16",
+      "source_label": "U.S. Department of the Interior, Aug. 21, 2026; Reclamation Record of Decision",
+      "source_url": "https://www.doi.gov/pressreleases/interior-department-finalizes-plans-2027-2028-colorado-river-operations",
       "also": [
+        "https://www.usbr.gov/ColoradoRiverBasin/post2026/decision-doc/P26_RecordofDecision_Final.pdf",
         "https://www.western-water.com/2026/08/21/the-decision-colorado-river-gets-2-year-plan-amid-record-lows/",
-        "https://www.doi.gov/pressreleases/interior-department-finalizes-plans-2027-2028-colorado-river-operations"
+        "https://www.cpr.org/2026/08/21/colorado-no-mandatory-cuts-colorado-river-rules/"
       ],
       "retrieved": "2026-09-20",
-      "verify_before_ship": true,
-      "notes": "Confirm figures in the ROD PDF. The ten-year framework does not lock in amounts for the decade."
+      "verify_before_ship": false,
+      "notes": "Re-confirmed 2026-10-16 from search results (the source pages are not fetchable from the build container). Interior issued the 2027-2028 operating guidelines and the Record of Decision within a 10-year Decision Framework (2027-2036); Lower Basin reductions of 1.25 million acre-feet in each of 2027 and 2028; Upper Basin conservation voluntary. Shortened for length; the 'ten-year framework' clause was dropped because the framework does not lock in amounts for the decade. Attributed to Interior, which issued the decision."
     },
     {
       "id": "C7",
       "kind": "fact",
-      "text": "On August 26, Denver Water ordered lawn watering to end October 1, through at least spring 2027. Hand-watering of trees and gardens is still allowed.",
-      "cue": { "event": "end" },
-      "as_of": "2026-09-20",
-      "source_label": "Denver Water, Aug. 26, 2026",
-      "source_url": "https://www.denverwater.org/tap/drought-conditions-worsen-denver-board-water-commissioners-declares-formal-end-lawn-watering",
+      "text": "On August 26, Denver Water ended lawn watering after September 30, likely through spring 2027. Hand-watering of trees and gardens is still allowed.",
+      "cue": {
+        "event": "end"
+      },
+      "as_of": "2026-10-16",
+      "source_label": "Denver Water, Board Resolution #002a-2026, Aug. 26, 2026",
+      "source_url": "https://www.denverwater.org/drought/board-resolution-002a-2026",
       "retrieved": "2026-09-20",
-      "verify_before_ship": true,
-      "notes": "Plan: verified 2026-09-20. Dated; re-check before each deploy (the ban runs until the board decides how and when watering resumes)."
+      "verify_before_ship": false,
+      "notes": "Re-confirmed 2026-10-16 from search results (the source pages are not fetchable from the build container). Lawn watering and spray irrigation stop after Sept. 30, 2026; hand-watering of trees and gardens allowed; ban holds until the board decides how and when watering resumes, expected into spring 2027. Dated; re-check before each deploy. Shortened for length 2026-10-16.",
+      "also": [
+        "https://www.denverwater.org/tap/drought-conditions-worsen-denver-board-water-commissioners-declares-formal-end-lawn-watering"
+      ]
     },
     {
       "id": "C8",
       "kind": "fact",
-      "text": "On September 4, the Colorado PUC cut Xcel's requested gas rate increase from $190 million to $122.7 million a year. New rates take effect October 6.",
-      "cue": { "event": "end" },
-      "as_of": "2026-09-20",
+      "text": "On September 4, the Colorado PUC cut Xcel's gas rate increase from the $190 million requested to $122.7 million a year, effective October 6.",
+      "cue": {
+        "event": "end"
+      },
+      "as_of": "2026-10-16",
       "source_label": "Colorado PUC press release, Sept. 4, 2026, Proceeding 25AL-0538G",
       "source_url": "https://puc.colorado.gov/press-release/puc-cuts-xcel-energys-natural-gas-rate-request",
       "retrieved": "2026-09-20",
-      "verify_before_ship": true,
-      "notes": "Plan: verified 2026-09-20. Re-check before ship: 'take effect October 6' is future tense and that date has passed; the final written decision (about Oct. 1) opened a 20-day reconsideration window."
+      "verify_before_ship": false,
+      "notes": "Re-confirmed 2026-10-16 from search results (the source pages are not fetchable from the build container). Settlement approved Sept. 4, 2026; $122.7 million vs $190 million requested; rates effective Oct. 6. Reconsideration requests (20 days after the ~Oct. 1 written decision) do not move the Oct. 6 date. Tense updated now that the date has passed. Dated; re-check before each deploy. Shortened for length 2026-10-16."
     },
     {
       "id": "C9",
       "kind": "framing",
       "text": "Three exposures: the interstate compact, the utility, the local supply. A ratepayer carries the second whatever happens to the first.",
-      "cue": { "event": "end" },
+      "cue": {
+        "event": "end"
+      },
       "notes": "Project analytical frame (three axes). Framing, not a factual claim; closing statement before the CTA."
     }
   ],
   "cta": {
     "text": "Everyone downstream of these decisions is affected: people who drink this water, farm with it, heat homes with the gas, and pay the bills. This is the record.",
     "button": "Enter Headwaters",
-    "approved": false,
-    "notes": "Editorial. Jamison to approve wording. Rendered in M5."
+    "approved": true,
+    "notes": "Editorial. Wording approved 2026-10-16."
   }
 }

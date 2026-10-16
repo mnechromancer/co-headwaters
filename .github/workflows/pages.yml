@@ -24,6 +24,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Same gates as the Test workflow's copy checks: never publish a caption
+      # still marked for re-verification, an unapproved CTA, or a caption list
+      # out of sync with copy.json. (No npm install needed: check-copy uses
+      # Node built-ins only.)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check copy before publishing
+        run: node scripts/check-copy.mjs --ship
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

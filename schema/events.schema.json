@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "events.schema.json",
+  "title": "Tracked events (data/events.json)",
+  "description": "Dated records on the three axes (compact, utility, local supply). Every event links to its source. Event ids must be unique (checked by the runtime validator and scripts/check-data.mjs; JSON Schema cannot express it).",
+  "type": "object",
+  "required": ["events"],
+  "additionalProperties": false,
+  "properties": {
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "date", "axis", "title", "source_url", "archive_url", "comment_deadline"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "date": { "type": "string", "format": "date" },
+          "axis": { "enum": ["compact", "utility", "supply"] },
+          "title": { "type": "string", "minLength": 1 },
+          "source_url": { "type": "string", "format": "uri", "pattern": "^https://" },
+          "archive_url": { "type": ["string", "null"], "format": "uri", "pattern": "^https://" },
+          "comment_deadline": { "type": ["string", "null"], "format": "date" }
+        }
+      }
+    }
+  }
+}

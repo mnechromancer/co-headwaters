@@ -118,16 +118,25 @@ test('the intro runs past the map coming to rest until the last caption has held
   expect(schedule.items.at(-1).end).toBeCloseTo(INTRO_END, 5);
 });
 
-test('skip button jumps to the end, hides itself, and remembers the visit', async ({ page }) => {
+// Skipping (or arriving any other way) lands on the dashboard with the map
+// moved into the basin panel.
+async function expectDashboard(page, { focused = true } = {}) {
+  await expect(page.locator('body')).toHaveClass(/dashboard-mode/);
+  await expect(page.locator('#dashboard')).toBeVisible();
+  await expect(page.locator('#intro')).toBeHidden();
+  await expect(page.locator('#map-slot .river-line')).toHaveCount(map.rivers.length);
+  const offsets = await page.$$eval('#map-slot .river-line', (els) => els.map((e) => Number(e.style.strokeDashoffset)));
+  expect(offsets.every((d) => d === 0)).toBe(true);
+  if (focused) await expect(page.locator('#dash-title')).toBeFocused();
+}
+
+test('skip button goes straight to the dashboard and remembers the visit', async ({ page }) => {
   await page.goto('/index.html');
   await expect(page.locator('#map .river-line')).toHaveCount(map.rivers.length);
   await expect(page.locator('#skip')).toBeVisible();
   await page.locator('#skip').click();
   await settle(page);
-  await expect(page.locator('#skip')).toBeHidden();
-  expect((await liveCaption(page)).text).toBe(captions.at(-1).text);
-  const offsets = await page.$$eval('.river-line', (els) => els.map((e) => Number(e.style.strokeDashoffset)));
-  expect(offsets.every((d) => d === 0)).toBe(true);
+  await expectDashboard(page);
   expect(await seen(page)).toBe('1');
 });
 
@@ -137,8 +146,7 @@ for (const key of ['Escape', 'Enter', ' ']) {
     await expect(page.locator('#map .river-line')).toHaveCount(map.rivers.length);
     await page.keyboard.press(key);
     await settle(page);
-    await expect(page.locator('#skip')).toBeHidden();
-    expect((await liveCaption(page)).text).toBe(captions.at(-1).text);
+    await expectDashboard(page);
   });
 }
 
@@ -154,14 +162,10 @@ test.describe('returning visitor', () => {
     await page.addInitScript((key) => localStorage.setItem(key, '1'), SEEN_KEY);
   });
 
-  test('lands on the end state without playing', async ({ page }) => {
+  test('lands on the dashboard without playing', async ({ page }) => {
     await page.goto('/index.html');
-    await expect(page.locator('#map .river-line')).toHaveCount(map.rivers.length);
     await settle(page);
-    await expect(page.locator('#skip')).toBeHidden();
-    expect((await liveCaption(page)).text).toBe(captions.at(-1).text);
-    const offsets = await page.$$eval('.river-line', (els) => els.map((e) => Number(e.style.strokeDashoffset)));
-    expect(offsets.every((d) => d === 0)).toBe(true);
+    await expectDashboard(page, { focused: false });
   });
 
   test('?replay=1 plays the intro again', async ({ page }) => {
@@ -171,6 +175,11 @@ test.describe('returning visitor', () => {
     await expect(page.locator('#skip')).toBeVisible();
     const offsets = await page.$$eval('.river-line', (els) => els.map((e) => Number(e.style.strokeDashoffset)));
     expect(offsets.some((d) => d > 0)).toBe(true);
+  });
+
+  test('the dashboard footer links to the replay', async ({ page }) => {
+    await page.goto('/index.html');
+    await expect(page.getByRole('link', { name: 'Replay intro' })).toHaveAttribute('href', '?replay=1');
   });
 });
 
@@ -184,14 +193,14 @@ test('blocked storage does not break the intro', async ({ page }) => {
   await expect(page.locator('#map .river-line')).toHaveCount(map.rivers.length);
   await page.locator('#skip').click();
   await settle(page);
-  await expect(page.locator('#skip')).toBeHidden();
+  await expectDashboard(page);
   expect(errors).toEqual([]);
 });
 
 test.describe('prefers-reduced-motion', () => {
   test.use({ reducedMotion: 'reduce' });
 
-  test('shows the final frame with every caption as a static list, nothing to skip', async ({ page }) => {
+  test('shows the final frame, every caption as a static list and the CTA; nothing to skip', async ({ page }) => {
     await page.goto('/index.html');
     await expect(page.locator('#map .river-line')).toHaveCount(map.rivers.length);
     await expect(page.locator('#caption-list')).toBeVisible();
@@ -199,17 +208,33 @@ test.describe('prefers-reduced-motion', () => {
     for (const li of await page.locator('#caption-list li').all()) await expect(li).toBeVisible();
     await expect(page.locator('#caption')).toBeHidden();
     await expect(page.locator('#skip')).toBeHidden();
+    await expect(page.locator('#cta')).toBeVisible();
+    const offsets = await page.$$eval('.river-line', (els) => els.map((e) => Number(e.style.strokeDashoffset)));
+    expect(offsets.every((d) => d === 0)).toBe(true);
+  });
+
+  test('does not auto-advance; the button cuts to the dashboard', async ({ page }) => {
+    await page.clock.install();
+    await page.goto('/index.html');
+    await expect(page.locator('#cta')).toBeVisible();
+    await page.clock.runFor(120_000);
+    await expect(page.locator('#intro')).toBeVisible();
+    await page.locator('#enter').click();
+    await expectDashboard(page);
   });
 });
 
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
-  test('shows the captions as text and a link into the dashboard', async ({ page }) => {
+  test('shows the captions as text, a link into the dashboard, and the dashboard shell', async ({ page }) => {
     await page.goto('/index.html');
     await expect(page.locator('#caption-list')).toBeVisible();
     for (const c of captions) await expect(page.getByText(c.text, { exact: true })).toBeVisible();
-    await expect(page.locator('#intro')).toBeHidden();
+    await expect(page.locator('#map')).toBeHidden();
+    await expect(page.locator('#skip')).toBeHidden();
     await expect(page.getByRole('link', { name: 'Go to the dashboard' })).toHaveAttribute('href', '#dashboard');
+    await expect(page.locator('#dashboard')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Open this week' })).toBeVisible();
   });
 });

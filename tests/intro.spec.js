@@ -18,10 +18,13 @@ const fractionAt = (river, t) => {
 async function openDebug(page) {
   const errors = [];
   page.on('pageerror', (err) => errors.push(err.message));
-  // The site ships no favicon; the browser's automatic request for one isn't
-  // a page error.
+  // Not page errors: the browser's automatic favicon request (the site ships
+  // none), and the watcher files, which are absent until the watcher
+  // publishes them (the dashboard renders an explicit missing state).
   page.on('console', (msg) => {
-    if (msg.type() === 'error' && !msg.location().url.endsWith('/favicon.ico')) errors.push(msg.text());
+    const url = msg.location().url;
+    const expected404 = url.endsWith('/favicon.ico') || url.endsWith('/data/status.json') || url.endsWith('/data/events.json');
+    if (msg.type() === 'error' && !expected404) errors.push(msg.text());
   });
   await page.goto('/index.html?debug=1');
   await expect(page.locator('#intro svg .river-line')).toHaveCount(map.rivers.length);
@@ -137,11 +140,10 @@ test('markers and labels keep a constant on-screen size as the camera zooms', as
       // not getBoundingClientRect, whose padding for SVG shapes differs
       // between Chromium builds (6px here, 7.16px in the CI headless shell).
       const dot = 2 * Number(document.querySelector('.headwater-dot').getAttribute('r')) * pxPerUnit;
-      // Hidden labels keep whatever size they last had; only visible ones
-      // are re-sized each frame.
+      // Labels are HTML at a fixed CSS size, independent of the camera.
       const fonts = [...document.querySelectorAll('.river-label')]
         .filter((l) => Number(l.style.opacity) > 0)
-        .map((l) => Number(l.getAttribute('font-size')) * pxPerUnit);
+        .map((l) => parseFloat(getComputedStyle(l).fontSize));
       return { dot, fonts };
     }));
   }
@@ -149,6 +151,40 @@ test('markers and labels keep a constant on-screen size as the camera zooms', as
     expect(dot).toBeCloseTo(6, 0); // r = 3 screen px
     expect(fonts.length).toBeGreaterThan(0);
     for (const f of fonts) expect(f).toBeCloseTo(11, 0);
+  }
+});
+
+// Labels ride the drawing tip: bottom-centre of each visible label sits a
+// fixed 8 px above the point the river has drawn to, at any zoom (held
+// inside the map area when the tip is near its edge).
+test('river labels track their river\'s drawing tip', async ({ page }) => {
+  await openDebug(page);
+  for (const t of [3, 14, 20]) {
+    await seek(page, t);
+    const gaps = await page.evaluate((rivers) => {
+      const paths = [...document.querySelectorAll('.river-line')];
+      return [...document.querySelectorAll('.river-label')].flatMap((label, i) => {
+        if (Number(label.style.opacity) <= 0) return [];
+        const r = rivers[i];
+        const now = Number(document.querySelector('.debug-scrubber [data-role="t"]').textContent);
+        const fraction = Math.max(0, Math.min(1, (now - r.startT) / (r.endT - r.startT)));
+        const path = paths[i];
+        const pt = path.getPointAtLength(fraction * path.getTotalLength());
+        const m = path.getScreenCTM();
+        const tip = { x: pt.x * m.a + m.e, y: pt.y * m.d + m.f };
+        const box = label.getBoundingClientRect();
+        const area = document.getElementById('map').getBoundingClientRect();
+        // Near the edge the label is held inside the map area instead.
+        const clamped = tip.x - area.left < box.width / 2 + 2 || area.right - tip.x < box.width / 2 + 2;
+        return [{ name: r.name, clamped, inside: box.left >= area.left && box.right <= area.right, dx: box.left + box.width / 2 - tip.x, dy: tip.y - box.bottom }];
+      });
+    }, map.rivers.map(({ name, startT, endT }) => ({ name, startT, endT })));
+    expect(gaps.length, `labels visible at t=${t}`).toBeGreaterThan(0);
+    for (const g of gaps) {
+      if (g.clamped) expect(g.inside, `${g.name} at t=${t} kept inside the map`).toBe(true);
+      else expect(Math.abs(g.dx), `${g.name} at t=${t}`).toBeLessThan(1.5);
+      expect(Math.abs(g.dy - 8), `${g.name} at t=${t}`).toBeLessThan(1.5);
+    }
   }
 });
 

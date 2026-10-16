@@ -8,9 +8,11 @@
   <link rel="stylesheet" href="assets/style.css" />
   <noscript>
     <style>
-      #intro { display: none; }
+      #map, #caption, #cta, #skip { display: none; }
+      #intro { min-height: 0; display: block; }
       #caption-list { position: static; width: auto; height: auto; clip: auto; overflow: visible; white-space: normal;
         max-width: 640px; margin: 0 auto 48px; padding: 0 24px 0 48px; font-size: 17px; }
+      #dashboard { display: block; }
     </style>
   </noscript>
 </head>
@@ -19,30 +21,72 @@
   <section id="intro">
     <div id="map" aria-hidden="true"></div>
     <p id="caption" aria-hidden="true"></p>
+
+    <noscript>
+      <p class="noscript-note">This page normally plays an animated map of where Colorado's rivers
+      begin. Its captions are listed below. <a href="#dashboard">Go to the dashboard</a>.</p>
+    </noscript>
+
+    <ol id="caption-list" class="visually-hidden">
+      <!-- captions:start (generated from data/copy.json by scripts/check-copy.mjs; do not edit) -->
+      <li data-id="C1" data-cue="{&quot;event&quot;:&quot;riverStart&quot;,&quot;river&quot;:&quot;North Platte&quot;,&quot;offset&quot;:0.5}"><span class="caption-text">The Arkansas, Colorado, Platte, and Rio Grande all begin in Colorado.</span></li>
+      <li data-id="C3" data-cue="{&quot;event&quot;:&quot;stateEnter&quot;,&quot;state&quot;:&quot;Utah&quot;}"><span class="caption-text">The Colorado River supplies more than 40 million people in seven states and Mexico.</span> <small class="as-of">As of Sept. 20, 2026</small></li>
+      <li data-id="C4" data-cue="{&quot;event&quot;:&quot;riverStart&quot;,&quot;river&quot;:&quot;Green&quot;}"><span class="caption-text">Denver Water reports natural streamflow ran at 22% of normal from April through July, the lowest in 110 years.</span> <small class="as-of">As of Oct. 16, 2026</small></li>
+      <li data-id="C5" data-cue="{&quot;event&quot;:&quot;stateEnter&quot;,&quot;state&quot;:&quot;Oklahoma&quot;}"><span class="caption-text">Lake Powell and Lake Mead have reached record-low combined storage.</span> <small class="as-of">As of Oct. 16, 2026</small></li>
+      <li data-id="C3b" data-cue="{&quot;event&quot;:&quot;riverEnd&quot;,&quot;river&quot;:&quot;Colorado&quot;}"><span class="caption-text">Water from these four systems crosses 10 states.</span></li>
+      <li data-id="C6" data-cue="{&quot;event&quot;:&quot;riverEnd&quot;,&quot;river&quot;:&quot;Arkansas&quot;}"><span class="caption-text">On August 21, the Interior Department set a two-year plan for 2027–2028: mandatory Lower Basin cuts of 1.25 million acre-feet a year, voluntary participation upstream.</span> <small class="as-of">As of Oct. 16, 2026</small></li>
+      <li data-id="C7" data-cue="{&quot;event&quot;:&quot;end&quot;}"><span class="caption-text">On August 26, Denver Water ended lawn watering after September 30, likely through spring 2027. Hand-watering of trees and gardens is still allowed.</span> <small class="as-of">As of Oct. 16, 2026</small></li>
+      <li data-id="C8" data-cue="{&quot;event&quot;:&quot;end&quot;}"><span class="caption-text">On September 4, the Colorado PUC cut Xcel&#39;s gas rate increase from the $190 million requested to $122.7 million a year, effective October 6.</span> <small class="as-of">As of Oct. 16, 2026</small></li>
+      <li data-id="C9" data-cue="{&quot;event&quot;:&quot;end&quot;}"><span class="caption-text">Three exposures: the interstate compact, the utility, the local supply. A ratepayer carries the second whatever happens to the first.</span></li>
+    <!-- captions:end -->
+    </ol>
+
+    <div id="cta" class="cta-card" hidden>
+      <!-- cta:start (generated from data/copy.json by scripts/check-copy.mjs; do not edit) -->
+      <p class="cta-text">Everyone downstream of these decisions is affected: people who drink this water, farm with it, heat homes with the gas, and pay the bills. This is the record.</p>
+      <button type="button" id="enter" class="cta-button">Enter Headwaters</button>
+    <!-- cta:end -->
+    </div>
+
     <button id="skip" type="button">Skip intro</button>
   </section>
 
-  <noscript>
-    <p class="noscript-note">This page normally plays an animated map of where Colorado's rivers
-    begin. Its captions are listed below. <a href="#dashboard">Go to the dashboard</a>.</p>
-  </noscript>
+  <main id="dashboard" aria-labelledby="dash-title">
+    <header class="dash-header">
+      <h1 id="dash-title" tabindex="-1">Headwaters</h1>
+      <p class="dash-sub">Colorado water and energy decisions: what is open now, and what the record covers.</p>
+    </header>
 
-  <ol id="caption-list" class="visually-hidden">
-    <!-- captions:start (generated from data/copy.json by scripts/check-copy.mjs; do not edit) -->
-    <li data-id="C1" data-cue="{&quot;event&quot;:&quot;riverStart&quot;,&quot;river&quot;:&quot;North Platte&quot;,&quot;offset&quot;:0.5}"><span class="caption-text">The Arkansas, Colorado, Platte, and Rio Grande all begin in Colorado.</span></li>
-    <li data-id="C2" data-cue="{&quot;event&quot;:&quot;stateEnter&quot;,&quot;state&quot;:&quot;Texas&quot;}"><span class="caption-text">Most of Colorado&#39;s rivers begin in the Rocky Mountains and flow across state lines.</span></li>
-    <li data-id="C3" data-cue="{&quot;event&quot;:&quot;riverStart&quot;,&quot;river&quot;:&quot;Green&quot;}"><span class="caption-text">The Colorado River supplies more than 40 million people in seven states and Mexico.</span> <small class="as-of">As of Sept. 20, 2026</small></li>
-    <li data-id="C3b" data-cue="{&quot;event&quot;:&quot;stateEnter&quot;,&quot;state&quot;:&quot;Oklahoma&quot;}"><span class="caption-text">Water from these four systems crosses 10 states.</span></li>
-    <li data-id="C4" data-cue="{&quot;event&quot;:&quot;riverEnd&quot;,&quot;river&quot;:&quot;Colorado&quot;}"><span class="caption-text">Denver Water reports natural streamflow ran at 22% of normal from April through July, the lowest in 110 years.</span> <small class="as-of">As of Sept. 20, 2026</small></li>
-    <li data-id="C5" data-cue="{&quot;event&quot;:&quot;riverEnd&quot;,&quot;river&quot;:&quot;Arkansas&quot;}"><span class="caption-text">Lake Powell and Lake Mead have reached record-low combined storage.</span> <small class="as-of">As of Sept. 20, 2026</small></li>
-    <li data-id="C6" data-cue="{&quot;event&quot;:&quot;end&quot;}"><span class="caption-text">On August 21, Reclamation set a two-year operating plan for 2027–2028 inside a ten-year framework. Lower Basin cuts are mandatory: 1.25 million acre-feet per year. Upper Basin participation is voluntary.</span> <small class="as-of">As of Sept. 20, 2026</small></li>
-    <li data-id="C7" data-cue="{&quot;event&quot;:&quot;end&quot;}"><span class="caption-text">On August 26, Denver Water ordered lawn watering to end October 1, through at least spring 2027. Hand-watering of trees and gardens is still allowed.</span> <small class="as-of">As of Sept. 20, 2026</small></li>
-    <li data-id="C8" data-cue="{&quot;event&quot;:&quot;end&quot;}"><span class="caption-text">On September 4, the Colorado PUC cut Xcel&#39;s requested gas rate increase from $190 million to $122.7 million a year. New rates take effect October 6.</span> <small class="as-of">As of Sept. 20, 2026</small></li>
-    <li data-id="C9" data-cue="{&quot;event&quot;:&quot;end&quot;}"><span class="caption-text">Three exposures: the interstate compact, the utility, the local supply. A ratepayer carries the second whatever happens to the first.</span></li>
-  <!-- captions:end -->
-  </ol>
+    <section class="panel" id="panel-basin" aria-labelledby="h-basin">
+      <h2 id="h-basin">Basin</h2>
+      <div id="map-slot" class="map-slot"></div>
+      <noscript><p class="empty-state">The basin map needs JavaScript.</p></noscript>
+    </section>
 
-  <main id="dashboard"></main>
+    <section class="panel" id="panel-open" aria-labelledby="h-open">
+      <h2 id="h-open">Open this week</h2>
+      <div class="panel-body" data-panel="open"></div>
+      <noscript><p class="empty-state">This panel reads published data files and needs JavaScript.</p></noscript>
+    </section>
+
+    <section class="panel" id="panel-timeline" aria-labelledby="h-timeline">
+      <h2 id="h-timeline">Compact, utility, local supply</h2>
+      <div class="panel-body" data-panel="timeline"></div>
+      <noscript><p class="empty-state">This panel reads published data files and needs JavaScript.</p></noscript>
+    </section>
+
+    <section class="panel" id="panel-sources" aria-labelledby="h-sources">
+      <h2 id="h-sources">Sources and freshness</h2>
+      <div class="panel-body" data-panel="sources"></div>
+      <noscript><p class="empty-state">This panel reads published data files and needs JavaScript.</p></noscript>
+    </section>
+
+    <footer class="dash-footer">
+      <p><a href="?replay=1">Replay intro</a> · <a href="#methodology">Methodology</a></p>
+      <p id="methodology">Methodology: how records are collected and checked will be published here.</p>
+      <p>Scope: Colorado only.</p>
+    </footer>
+  </main>
 
   <script type="module" src="assets/intro.js"></script>
   <script type="module" src="assets/dashboard.js"></script>

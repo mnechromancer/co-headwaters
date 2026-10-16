@@ -21,6 +21,11 @@ jobs:
       # copy.json rules, caption list in sync with index.html, crypto
       # vocabulary gate (plan section 6 and acceptance criteria).
       - run: npm run check-copy
+      # Data contracts: schemas compile, runtime validators agree with them
+      # on every fixture, published data files (if any) pass.
+      - run: npm run check-data
+      # Shipping gate: no caption still marked verify_before_ship, CTA approved.
+      - run: npm run check-copy -- --ship
       - run: npx playwright install --with-deps chromium
       # Screenshot baselines are machine-specific (see tests/README.md);
       # CI runs the behavioural checks only.
