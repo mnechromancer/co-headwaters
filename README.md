@@ -88,7 +88,10 @@ npm run build-map
   requests, payload 47.5 KB gzipped (budget 400 KB; `map.json` 23.6 KB of 250 KB). Frame rate at 4x
   CPU throttle on the 390 px profile: 59.9 fps average, p95 16.7 ms (`npm run perf`; was 31 fps
   before removing per-frame forced layouts).
-- M8: deploy to GitHub Pages and record the deployed commit here.
+- **M8 — done.** Deployed to GitHub Pages from `main` at commit `4a59162` (merge of PR #3) on
+  2026-10-16, Deploy Pages run #13: copy gate passed, site assembled from `index.html`, `assets/`
+  and `data/` only. Live at https://mnechromancer.github.io/co-headwaters/ (not loaded from the
+  build container: its network policy blocks github.io).
 
 ## Before publishing
 
@@ -104,5 +107,11 @@ npm run build-map
 
 ## Deploy
 
-Deployed via GitHub Actions (`.github/workflows/pages.yml`) on every push to `main` — see
-Settings → Pages for the live URL once the first deploy completes.
+Deployed via GitHub Actions (`.github/workflows/pages.yml`) on every push to `main`, to
+https://mnechromancer.github.io/co-headwaters/. The workflow refuses to publish if
+`check-copy --ship` fails, and publishes only `index.html`, `assets/` and `data/`.
+
+| Date | Commit | Contents |
+|---|---|---|
+| 2026-10-16 | `4a59162` | M5–M7: CTA and transition, dashboard shell, accessibility/perf pass |
+| 2026-10-16 | `c9cdf91` | M4: captions, source check, skip, returning-visitor flag |
