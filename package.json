@@ -10,7 +10,9 @@
   "scripts": {
     "build-map": "node scripts/build-map.mjs",
     "test": "playwright test",
-    "test:update": "playwright test --update-snapshots"
+    "test:update": "playwright test --update-snapshots",
+    "check-copy": "node scripts/check-copy.mjs",
+    "build-copy": "node scripts/check-copy.mjs --write"
   },
   "dependencies": {
     "d3-geo": "^3.1.1",

@@ -18,6 +18,9 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      # copy.json rules, caption list in sync with index.html, crypto
+      # vocabulary gate (plan section 6 and acceptance criteria).
+      - run: npm run check-copy
       - run: npx playwright install --with-deps chromium
       # Screenshot baselines are machine-specific (see tests/README.md);
       # CI runs the behavioural checks only.

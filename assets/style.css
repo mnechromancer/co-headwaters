@@ -12,6 +12,8 @@
   --cta:        #B4471F;
   --border:     #C9C4B8;
 
+  --caption-box: 8.5rem; /* fixed caption area under the map: no layout shift */
+
   --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 }
@@ -62,11 +64,19 @@ img, svg { max-width: 100%; }
    framing the director computed was not the framing anyone saw. Clamping the
    height keeps the whole box on screen; the ratio is preserved, so renderAt()'s
    px-per-user-unit maths is unaffected. */
+#map {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Room is reserved below the map for the caption box, so the map's height is
+   capped by what's left of the viewport. */
 #intro svg {
   width: 100%;
   max-width: 960px;
-  max-height: 100vh;
-  max-height: 100dvh;
+  max-height: calc(100vh - var(--caption-box));
+  max-height: calc(100dvh - var(--caption-box));
 }
 
 .state-outline {
@@ -159,11 +169,30 @@ img, svg { max-width: 100%; }
 #caption {
   font-family: var(--sans);
   font-size: 18px;
+  line-height: 1.45;
   color: var(--ink);
+  width: 100%;
   max-width: 640px;
+  /* Fixed height sized for the longest caption, so swapping captions never
+     moves the map. */
+  height: calc(var(--caption-box) - 24px);
   text-align: center;
-  margin: 24px auto 0;
+  margin: 12px auto 0;
   padding: 0 24px;
+  opacity: 0;
+}
+
+.as-of {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  :root { --caption-box: 12rem; }
+  #caption { font-size: 16px; }
 }
 
 #skip {
@@ -181,7 +210,41 @@ img, svg { max-width: 100%; }
   cursor: pointer;
 }
 
-#skip:hover { color: var(--ink); border-color: var(--ink); }
+#skip:hover,
+#skip:focus-visible { color: var(--ink); border-color: var(--ink); }
+
+#skip[hidden] { display: none; }
+
+body.debug #skip { bottom: 64px; }
+
+/* Reduced motion (and no-JS, via the <noscript> style in index.html): the
+   live caption is replaced by the full caption list under the final frame. */
+body.static-captions #caption { display: none; }
+
+body.static-captions #caption-list {
+  position: static;
+  width: auto;
+  height: auto;
+  clip: auto;
+  overflow: visible;
+  white-space: normal;
+}
+
+body.static-captions #caption-list {
+  max-width: 640px;
+  margin: 0 auto 48px;
+  padding: 0 24px 0 48px;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+#caption-list li + li { margin-top: 12px; }
+
+.noscript-note {
+  max-width: 640px;
+  margin: 48px auto 24px;
+  padding: 0 24px;
+}
 
 .cta-card {
   background: #fff;

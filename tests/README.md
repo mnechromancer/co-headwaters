@@ -3,6 +3,9 @@ the `?debug=1` scrubber and asserts the frame against the timings in `data/map.j
 (river draw fraction, state fades, final camera, constant on-screen marker/label size,
 seek-pauses-clock, deterministic seeking, `prefers-reduced-motion`), plus screenshot
 baselines at t = 2, 6, 12, 20, 30, END for desktop (1280×800) and mobile (390×844).
+`captions.spec.js` covers M4: caption list in the DOM from load, captions on their map cues
+(cue times recomputed independently of `assets/captions.js`), crossfade, skip by button and
+keyboard, returning-visitor flag and `?replay=1`, blocked storage, reduced motion, no-JS.
 M7 adds the accessibility/perf pass.
 
 ```bash
