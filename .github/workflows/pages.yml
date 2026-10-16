@@ -27,10 +27,17 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      # Publish only the site itself, not the repo: docs/ holds the internal
+      # plan, scripts/ and tests/ are dev-only.
+      - name: Assemble site
+        run: |
+          mkdir _site
+          cp -r index.html assets data _site/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
