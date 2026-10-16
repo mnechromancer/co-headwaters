@@ -73,6 +73,7 @@ img, svg { max-width: 100%; }
 /* Room is reserved below the map for the caption box, so the map's height is
    capped by what's left of the viewport. */
 #intro svg {
+  display: block;
   width: 100%;
   max-width: 960px;
   max-height: calc(100vh - var(--caption-box));
@@ -131,10 +132,27 @@ img, svg { max-width: 100%; }
   opacity: 0;
 }
 
+#map { position: relative; }
+
+.label-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+body.transitioning .label-layer,
+body.dashboard-mode .label-layer { display: none; }
+
 .river-label {
+  position: absolute;
+  left: 0;
+  top: 0;
   font-family: var(--mono);
-  fill: var(--ink);
-  text-anchor: middle;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
   opacity: 0;
 }
 
@@ -246,14 +264,31 @@ body.static-captions #caption-list {
   padding: 0 24px;
 }
 
+/* Call-to-action card: over the lower part of the map once the last caption
+   has played. */
+#cta {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--caption-box) / 2);
+  transform: translateX(-50%);
+  width: min(520px, calc(100% - 32px));
+  z-index: 1;
+}
+
+#cta[hidden] { display: none; }
+
 .cta-card {
   background: #fff;
   border: 1px solid var(--border);
   border-top: 3px solid var(--cta);
-  padding: 24px 28px;
-  max-width: 520px;
+  padding: 20px 24px;
   text-align: center;
-  margin: 24px auto 0;
+}
+
+.cta-text {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
 }
 
 .cta-button {
@@ -266,16 +301,57 @@ body.static-captions #caption-list {
   border: none;
   padding: 12px 22px;
   cursor: pointer;
-  margin-top: 12px;
+  margin-top: 14px;
 }
+
+.cta-button:focus-visible,
+#skip:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+body.static-captions #cta {
+  position: static;
+  transform: none;
+  margin: 0 auto 48px;
+}
+
+/* Shared-element transition: the intro becomes a transparent overlay so the
+   dashboard can lay out (and fade in) underneath while the map moves into
+   its panel. */
+body.transitioning #intro {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  background: transparent;
+  pointer-events: none;
+}
+
+body.dashboard-mode #intro { display: none; }
 
 /* ── Dashboard ───────────────────────────────────────────────────────── */
 
 #dashboard {
   max-width: 960px;
   margin: 0 auto;
-  padding: 24px 24px 96px;
+  padding: 24px 24px 48px;
   display: none;
+}
+
+body.transitioning #dashboard,
+body.dashboard-mode #dashboard { display: block; }
+
+.dash-header h1 {
+  font-size: 28px;
+  margin: 8px 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.dash-header h1:focus { outline: none; }
+
+.dash-sub {
+  margin: 0 0 20px;
+  color: var(--muted);
 }
 
 .panel {
@@ -295,27 +371,149 @@ body.static-captions #caption-list {
   margin: 0 0 14px;
 }
 
+.map-slot {
+  position: relative;
+  /* Keep the basin map within ~65% of the viewport height; --map-aspect
+     (viewBox width / height) is set by intro.js. The slot keeps the viewBox
+     aspect ratio so the map fills it exactly. */
+  width: min(100%, calc(65vh * var(--map-aspect, 1)));
+  margin: 0 auto;
+}
+
+.map-slot svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+}
+
+.river-hit {
+  fill: none;
+  stroke: transparent;
+  pointer-events: none;
+}
+
+body.dashboard-mode .river-hit { pointer-events: stroke; }
+
+.river-tip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 10px));
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 3px 8px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.river-tip[hidden] { display: none; }
+
 .empty-state {
   font-family: var(--mono);
   font-size: 13px;
   color: var(--muted);
   border: 1px dashed var(--border);
   padding: 14px 16px;
+  margin: 0;
 }
 
-.stale-warning {
+/* Warning states use a heavy border and a text label, not color, so they
+   read without color vision and stay clear of the CTA accent. */
+.warning {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--ink);
-  border: 1px solid var(--ink);
+  border: 2px solid var(--ink);
   padding: 8px 12px;
-  margin-top: 8px;
+  margin: 0;
 }
 
-footer {
+.warning strong { letter-spacing: 0.06em; }
+
+/* Open this week */
+.open-list { list-style: none; margin: 0; padding: 0; }
+.open-list li { padding: 10px 0; border-top: 1px solid var(--border); }
+.open-list li:first-child { border-top: none; padding-top: 0; }
+.open-meta { display: block; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+/* Timeline */
+.timeline { font-size: 13px; }
+.tl-track {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: center;
+  min-height: 40px;
+  border-top: 1px solid var(--border);
+}
+.tl-label { font-family: var(--mono); font-size: 12px; color: var(--ink); padding-right: 8px; }
+.tl-lane { position: relative; height: 40px; }
+.tl-lane::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  border-top: 1px solid var(--state-line);
+}
+.tl-empty {
+  position: absolute;
+  left: 8px; top: 50%;
+  transform: translateY(-50%);
+  background: #fff;
+  padding: 0 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.tl-event {
+  position: absolute;
+  top: 50%;
+  width: 12px; height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--river);
+  border: 2px solid #fff;
+}
+.tl-event:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.tl-axis {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  border-top: 1px solid var(--border);
+}
+.tl-ticks { position: relative; height: 22px; }
+.tl-tick {
+  position: absolute;
+  top: 4px;
+  transform: translateX(-50%);
   font-family: var(--mono);
   font-size: 11px;
   color: var(--muted);
+  white-space: nowrap;
+}
+.tl-today {
+  position: absolute;
+  top: 0; bottom: 0;
+  border-left: 1px dashed var(--ink);
+}
+
+/* Sources */
+.source-list { list-style: none; margin: 0; padding: 0; }
+.source-row { padding: 10px 0; border-top: 1px solid var(--border); }
+.source-row:first-child { border-top: none; padding-top: 0; }
+.source-name { font-weight: 600; }
+.source-status { display: block; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.source-row .warning { margin-top: 6px; }
+
+.dash-footer {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
   text-align: center;
-  padding: 24px;
+  padding: 16px 0 0;
+}
+.dash-footer p { margin: 4px 0; }
+
+@media (max-width: 600px) {
+  .tl-track, .tl-axis { grid-template-columns: 5.5rem 1fr; }
+  .tl-tick-minor { display: none; }
 }

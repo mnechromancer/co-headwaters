@@ -1,0 +1,8 @@
+{
+  "events": [
+    { "id": "fx-compact-1", "date": "2026-08-21", "axis": "compact", "title": "Fixture: compact record", "source_url": "https://example.org/fixture/compact-1", "archive_url": null, "comment_deadline": null },
+    { "id": "fx-utility-1", "date": "2026-09-04", "axis": "utility", "title": "Fixture: utility record, comments closed", "source_url": "https://example.org/fixture/utility-1", "archive_url": "https://example.org/archive/utility-1", "comment_deadline": "2026-10-10" },
+    { "id": "fx-utility-2", "date": "2026-10-01", "axis": "utility", "title": "Fixture: utility record, comments open", "source_url": "https://example.org/fixture/utility-2", "archive_url": "https://example.org/archive/utility-2", "comment_deadline": "2026-10-20" },
+    { "id": "fx-supply-1", "date": "2026-10-09", "axis": "supply", "title": "Fixture: supply record, closes today", "source_url": "https://example.org/fixture/supply-1", "archive_url": null, "comment_deadline": "2026-10-16" }
+  ]
+}

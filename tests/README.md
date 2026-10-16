@@ -6,13 +6,20 @@ baselines at t = 2, 6, 12, 20, 30, END for desktop (1280×800) and mobile (390×
 `captions.spec.js` covers M4: caption list in the DOM from load, captions on their map cues
 (cue times recomputed independently of `assets/captions.js`), crossfade, skip by button and
 keyboard, returning-visitor flag and `?replay=1`, blocked storage, reduced motion, no-JS.
-M7 adds the accessibility/perf pass.
+`transition.spec.js` covers M5 (CTA card, auto-advance, Enter Headwaters, keyboard on the card,
+shared-element transition landing on the panel without a jump, river hover). `dashboard.spec.js`
+covers M6: every panel state, driven by routing `tests/fixtures/*.json` in place of the watcher
+files (fixtures are never deployed). `acceptance.spec.js` covers M7: contrast, payload, third-party
+requests, layout shift, keyboard-only run, screen-reader tree. `perf.spec.js` measures frame rate
+at 4x CPU throttle; it is excluded from `npm test` and runs with `npm run perf`.
 
 ```bash
 npm install
 npx playwright install chromium   # once
 npm test                          # everything
 npm test -- --grep-invert @screenshot   # behaviour only (what CI runs)
+npm run check-data                # schemas vs runtime validators vs fixtures
+npm run perf                      # frame-rate probe (machine-dependent)
 npm run test:update               # re-render screenshot baselines after an intended visual change
 ```
 

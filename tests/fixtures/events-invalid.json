@@ -1,0 +1,6 @@
+{
+  "events": [
+    { "id": "fx-1", "date": "2026-10-01", "axis": "compact", "title": "Fixture", "source_url": "https://example.org/a", "archive_url": null, "comment_deadline": null },
+    { "id": "fx-1", "date": "2026-10-02", "axis": "basin", "title": "Fixture", "source_url": "http://example.org/b", "archive_url": null, "comment_deadline": null }
+  ]
+}
